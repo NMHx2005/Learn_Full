@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lộ trình Full Stack Senior</title>
+<style>
+:root {
+  --bg: #f6f8fc;
+  --bg-card: #ffffff;
+  --bg-subtle: #f1f4fa;
+  --text: #14171f;
+  --text-secondary: #4c5566;
+  --text-muted: #6f7787;
+  --border: #e0e5ef;
+  --shadow: 0 12px 30px rgba(15, 36, 84, 0.08);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --accent: #3859d8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at top right, #e8efff 0%, var(--bg) 44%);
+  color: var(--text);
+  line-height: 1.45;
+}
+
+.page {
+  max-width: 1020px;
+  margin: 0 auto;
+  padding: 28px 20px 48px;
+}
+
+.hero {
+  background: linear-gradient(120deg, #1d2b73 0%, #2743b5 48%, #3f66f0 100%);
+  color: #eef2ff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+.hero h1 { font-size: 28px; line-height: 1.2; margin-bottom: 10px; }
+.hero p { font-size: 15px; opacity: 0.95; max-width: 780px; }
+.hero-note {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #dbe4ff;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 12px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 14px 12px;
+  box-shadow: 0 4px 12px rgba(35, 53, 96, 0.04);
+}
+.summary-num { font-size: 22px; font-weight: 700; color: #1c2f78; }
+.summary-lbl { margin-top: 2px; font-size: 12px; color: var(--text-secondary); }
+
+.insight {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.insight-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.insight-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.insight-item {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 11px;
+}
+.insight-item b { display: block; font-size: 13px; color: #273b91; margin-bottom: 4px; }
+.insight-item span { font-size: 12px; color: var(--text-secondary); }
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tab {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all .18s;
+}
+.tab:hover { border-color: #b9c6ea; color: #2d3f89; }
+.tab.active {
+  background: #e9efff;
+  border-color: #b6c6f8;
+  color: #23398d;
+  font-weight: 600;
+}
+
+.search-wrap {
+  flex: 1;
+  min-width: 210px;
+  display: flex;
+  justify-content: flex-end;
+}
+.search {
+  width: min(360px, 100%);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-card);
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text);
+}
+.search:focus {
+  outline: none;
+  border-color: #a6b9f7;
+  box-shadow: 0 0 0 4px rgba(112, 144, 255, 0.14);
+}
+
+.phases {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.phase-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(26, 42, 86, 0.05);
+}
+.phase-header {
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 12px;
+  align-items: center;
+  cursor: pointer;
+}
+.phase-header:hover { background: #f8faff; }
+.phase-badge {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 10px;
+}
+.phase-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.phase-meta { font-size: 12px; color: var(--text-secondary); }
+.phase-toggle { color: var(--text-muted); font-size: 13px; transition: transform .2s; }
+.phase-toggle.open { transform: rotate(180deg); }
+
+.phase-track {
+  height: 6px;
+  background: #ebeff7;
+}
+.phase-progress {
+  height: 100%;
+  transition: width .22s ease;
+}
+
+.phase-body {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 14px 16px 16px;
+}
+.phase-body.open { display: block; }
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.topics {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.topic {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: #fff;
+}
+.topic-header {
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+.topic:hover { border-color: #c7d3ef; }
+.topic-tag {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.topic-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.topic-chevron { font-size: 11px; color: var(--text-muted); transition: transform .15s; }
+.topic-chevron.open { transform: rotate(180deg); }
+.topic-detail {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 10px 12px 12px;
+}
+.topic-detail.open { display: block; }
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.detail-box {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  padding: 9px 10px;
+}
+.detail-box-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.detail-box-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.project-box {
+  margin-top: 8px;
+  background: linear-gradient(120deg, #eef3ff, #f8f9ff);
+  border: 1px solid #dce5ff;
+  border-radius: var(--radius-sm);
+  padding: 10px 11px;
+}
+.project-label { font-size: 11px; font-weight: 700; color: #415bb5; margin-bottom: 4px; }
+.project-name { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: #22357f; }
+.project-desc { font-size: 12px; color: #3f4c78; line-height: 1.5; }
+
+.checkpoint {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  background: #fbfcff;
+}
+.checkpoint-title { font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; }
+.checklist { display: flex; flex-direction: column; gap: 7px; }
+.check-item {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  align-items: start;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.check-item input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #2f9b67;
+  cursor: pointer;
+}
+
+.empty {
+  border: 1px dashed #cfd8ef;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  background: #fafcff;
+}
+
+/* tag colors */
+.tag-be { background: #e7f0ff; color: #0f4f92; }
+.tag-fe { background: #eaf8e3; color: #2a6113; }
+.tag-do { background: #fff1dc; color: #71430f; }
+.tag-ai { background: #eeedff; color: #443a9d; }
+.tag-sd { background: #e5f7f1; color: #0f6451; }
+.tag-en { background: #ffece5; color: #78321b; }
+
+/* phase badges */
+.badge-0 { background: #ece9e1; color: #4e4942; }
+.badge-1 { background: #e4eeff; color: #0f4d88; }
+.badge-2 { background: #e8f3de; color: #306216; }
+.badge-3 { background: #ecebff; color: #4b3fae; }
+.badge-4 { background: #e2f3ef; color: #0f6750; }
+
+@media (max-width: 900px) {
+  .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .insight-list { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  .hero h1 { font-size: 22px; }
+  .phase-header { grid-template-columns: 1fr auto; }
+  .phase-badge, .phase-meta { display: none; }
+  .detail-row { grid-template-columns: 1fr; }
+  .search-wrap { width: 100%; justify-content: flex-start; }
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <section class="hero">
+    <h1>Lộ trình 0 → Senior Full Stack Engineer</h1>
+    <p>
+      Phiên bản nâng cấp: tập trung học có chiến lược, đo tiến độ rõ ràng và xây portfolio thực chiến theo từng giai đoạn.
+      Mỗi topic đều có lý do học, phạm vi kiến thức, cách luyện và output project.
+    </p>
+    <p class="hero-note">Nguyên tắc chạy roadmap: học sâu ít thứ quan trọng, build liên tục, ship thật, review thật.</p>
+  </section>
+
+  <section class="summary-grid" id="summary-grid"></section>
+
+  <section class="insight">
+    <div class="insight-title">Chiến lược để tối ưu lộ trình</div>
+    <div class="insight-list">
+      <div class="insight-item">
+        <b>Nhịp học ổn định</b>
+        <span>10-15 giờ/tuần, không học dồn. Mỗi tuần luôn có 1 output nhìn thấy được.</span>
+      </div>
+      <div class="insight-item">
+        <b>Build trước, đọc sau</b>
+        <span>Ship một bản chạy được, rồi mới tối ưu architecture/performance để nhớ sâu hơn.</span>
+      </div>
+      <div class="insight-item">
+        <b>Portfolio có câu chuyện</b>
+        <span>Mỗi project cần nêu rõ vấn đề, quyết định kỹ thuật, trade-off và bài học.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="toolbar">
+    <div class="tabs">
+      <button class="tab active" onclick="filterPhases('all', this)">Tất cả</button>
+      <button class="tab" onclick="filterPhases('be', this)">Backend</button>
+      <button class="tab" onclick="filterPhases('fe', this)">Frontend</button>
+      <button class="tab" onclick="filterPhases('do', this)">DevOps</button>
+      <button class="tab" onclick="filterPhases('ai', this)">AI</button>
+      <button class="tab" onclick="filterPhases('en', this)">English</button>
+    </div>
+    <div class="search-wrap">
+      <input id="topic-search" class="search" type="search" placeholder="Tìm topic, ví dụ: Redis, Next.js, RAG..." oninput="updateSearch(this.value)" />
+    </div>
+  </section>
+
+  <section class="phases" id="phases-container"></section>
+</main>
+<script>
+const data = [
+  {
+    id: 0,
+    title: "Giai đoạn 0 — Nền tảng & Mindset",
+    duration: "Tháng 1–2",
+    badge: "Khởi đầu",
+    badgeClass: "badge-0",
+    barColor: "#888780",
+    topics: [
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "Node.js sâu hơn — Event Loop & Async",
+        why: "Đây là trái tim của Node.js. Nếu không hiểu event loop, bạn sẽ viết bug không tìm ra nguyên nhân.",
+        what: "Event loop phases, microtask/macrotask queue, libuv, Promise internals, async/await dưới hood, streams.",
+        how: "Đọc Node.js docs chính thức + xem video từ Lydia Hallie. Viết lại từng ví dụ bằng tay.",
+        project: { name: "CLI tool phân tích file lớn", desc: "Đọc file CSV 500MB bằng streams, tính toán không block event loop, output kết quả ra file khác." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "JavaScript fundamentals thật sự sâu",
+        why: "Closures, prototype chain, this binding — đây là những thứ senior interviews hỏi và bạn cần tự tin 100%.",
+        what: "Closures, scope chain, prototype/class, this, call/apply/bind, iterators, generators, WeakMap/WeakSet.",
+        how: "Làm hết bài tập trên javascript.info (miễn phí, tốt nhất hiện tại). Giải thích lại bằng lời mình.",
+        project: { name: "Mini lodash library", desc: "Tự viết lại 15 function của lodash: debounce, throttle, deepClone, groupBy, memoize... Không xem source code trước." }
+      },
+      {
+        tag: "en", tagLabel: "English",
+        name: "English từ zero — Technical Reading",
+        why: "99% tài liệu tốt là tiếng Anh. Đọc được docs → học nhanh gấp 3 lần.",
+        what: "Vocabulary kỹ thuật cơ bản, đọc README/docs, hiểu error message, viết commit message.",
+        how: "Mỗi ngày đọc 1 trang docs bất kỳ + dùng Google Translate cho từ không biết + ghi lại vào Anki.",
+        project: { name: "Git commit habit", desc: "Commit mỗi ngày bằng tiếng Anh, theo format: feat/fix/docs/refactor + mô tả ngắn. Sau 2 tháng nhìn lại history." }
+      },
+      {
+        tag: "ai", tagLabel: "AI",
+        name: "Prompt Engineering cơ bản",
+        why: "Dùng AI đúng cách = học nhanh hơn 3x, code ít lỗi hơn, debug nhanh hơn.",
+        what: "Zero-shot, few-shot, chain-of-thought, role prompting, structured output với JSON.",
+        how: "Thực hành mỗi ngày với Claude/ChatGPT. Lưu lại các prompt hiệu quả vào file markdown.",
+        project: { name: "Prompt library cá nhân", desc: "Xây bộ sưu tập 30+ prompt hữu ích cho dev: giải thích code, review, viết test, debug, explain error..." }
+      }
+    ],
+    checkpoint: [
+      "Giải thích được event loop bằng lời mình (không xem tài liệu)",
+      "Viết được async code đúng cách, xử lý race condition",
+      "Đọc được error message tiếng Anh và tự debug",
+      "Viết commit message tiếng Anh không cần dịch",
+      "Dùng AI để hỏi câu hỏi kỹ thuật hiệu quả"
+    ]
+  },
+  {
+    id: 1,
+    title: "Giai đoạn 1 — Backend Cốt lõi",
+    duration: "Tháng 3–6",
+    badge: "Junior → Mid",
+    badgeClass: "badge-1",
+    barColor: "#185FA5",
+    topics: [
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "NestJS — Structure & Architecture",
+        why: "NestJS là framework chuẩn enterprise cho Node.js. Hiểu DI, modules, decorators → scale codebase dễ dàng.",
+        what: "Modules, Controllers, Services, Dependency Injection, Guards, Interceptors, Pipes, Middleware, Exception filters.",
+        how: "Build từ đầu, không dùng generate. Đọc source code của Nest để hiểu DI container hoạt động thế nào.",
+        project: { name: "Blog API với NestJS", desc: "CRUD đầy đủ: posts, users, categories. Có validation pipes, global exception filter, request logging interceptor, response transform interceptor." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "PostgreSQL & Database Design",
+        why: "SQL là kỹ năng không bao giờ lỗi thời. Hiểu sâu DB = write query nhanh, tránh N+1, index đúng chỗ.",
+        what: "Normalization, indexes (B-tree, GIN, partial), query plan (EXPLAIN ANALYZE), transactions, ACID, joins, CTEs, window functions.",
+        how: "Dùng pgAdmin hoặc DBeaver. Luôn chạy EXPLAIN ANALYZE trước khi ship query. Practice trên pgexercises.com.",
+        project: { name: "E-commerce schema + optimization", desc: "Thiết kế schema cho shop: products, orders, inventory, reviews. Tối ưu query liệt kê sản phẩm bán chạy nhất theo category, dưới 50ms với 1M rows." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "Authentication & Authorization",
+        why: "Security là không thể thiếu. Làm sai → data breach, mất user trust, mất job.",
+        what: "JWT (access + refresh tokens), bcrypt, RBAC (role-based), OAuth2 flow (Google login), session vs token, CORS.",
+        how: "Implement tự tay, không dùng auth library trước. Sau đó dùng Passport.js và so sánh.",
+        project: { name: "Auth system hoàn chỉnh", desc: "Login/register, refresh token rotation, Google OAuth, forgot password (email OTP), RBAC với 3 roles: admin/editor/user. Có rate limiting cho login endpoint." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "Redis — Caching & Sessions",
+        why: "Cache đúng chỗ = giảm DB load 10x, response time từ 200ms xuống 5ms.",
+        what: "Redis data structures (string, hash, list, sorted set, set), TTL, cache-aside pattern, cache invalidation, pub/sub cơ bản.",
+        how: "Cài Redis local bằng Docker. Đo response time trước/sau cache bằng Postman.",
+        project: { name: "Cache layer cho API", desc: "Thêm Redis vào blog API: cache danh sách posts (invalidate khi có bài mới), cache user profile, store refresh tokens, rate limiting với sliding window." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "API Design Best Practices",
+        why: "API xấu = frontend khổ sở, client khó integrate, khó maintain sau này.",
+        what: "RESTful conventions, versioning (/api/v1), pagination (cursor-based vs offset), filtering, sorting, error response format chuẩn, rate limiting.",
+        how: "Review các public API tốt: Stripe, GitHub, Twilio. Học cách họ design error messages.",
+        project: { name: "API documentation với Swagger", desc: "Viết OpenAPI spec đầy đủ cho blog API, có example requests/responses, authentication docs, error code glossary." }
+      },
+      {
+        tag: "en", tagLabel: "English",
+        name: "English — Technical Writing",
+        why: "Code review comments, PR descriptions, Slack với team nước ngoài đều cần viết tiếng Anh rõ ràng.",
+        what: "Viết PR description, comment code bằng tiếng Anh, README files, báo cáo bug.",
+        how: "Viết README cho mọi project bằng tiếng Anh. Dùng Grammarly. Đọc good PR descriptions trên GitHub OSS.",
+        project: { name: "README portfolio", desc: "Viết README đầy đủ cho mọi project: what, why, how to run, API endpoints, architecture decisions." }
+      }
+    ],
+    checkpoint: [
+      "Build NestJS app với DI, guards, interceptors không cần xem tutorial",
+      "Thiết kế DB schema cho hệ thống mới và giải thích trade-offs",
+      "Implement JWT auth với refresh token rotation",
+      "Thêm Redis cache và đo được improvement",
+      "API của bạn có pagination, filtering, proper error format"
+    ]
+  },
+  {
+    id: 2,
+    title: "Giai đoạn 2 — DevOps & Deployment",
+    duration: "Tháng 7–9",
+    badge: "Production Ready",
+    badgeClass: "badge-2",
+    barColor: "#3B6D11",
+    topics: [
+      {
+        tag: "do", tagLabel: "DevOps",
+        name: "Docker — Containerization",
+        why: "Không có Docker = 'works on my machine'. Docker chuẩn hóa environment từ dev đến production.",
+        what: "Dockerfile (multi-stage), docker-compose, volumes, networks, .dockerignore, image optimization, layer caching.",
+        how: "Containerize mọi project từ giờ trở đi. Học cách đọc Dockerfile của các project OSS lớn.",
+        project: { name: "Dockerize NestJS stack", desc: "Docker Compose cho: NestJS app + PostgreSQL + Redis + Nginx. Dùng multi-stage build để image nhỏ nhất. Production-like với health checks." }
+      },
+      {
+        tag: "do", tagLabel: "DevOps",
+        name: "CI/CD với GitHub Actions",
+        why: "CI/CD = mỗi lần push code là test tự chạy, build tự deploy. Không có CI/CD = deploy bằng tay = sai lầm.",
+        what: "Workflow YAML syntax, jobs/steps, secrets management, matrix builds, Docker build & push, deploy triggers.",
+        how: "Setup GitHub Actions cho mọi project. Bắt đầu đơn giản: chỉ run tests. Sau đó thêm deploy.",
+        project: { name: "Full CI/CD pipeline", desc: "On push to main: run tests → lint → build Docker image → push to Docker Hub → SSH vào VPS → pull & restart. Có Slack notification khi deploy fail." }
+      },
+      {
+        tag: "do", tagLabel: "DevOps",
+        name: "VPS Deployment & Nginx",
+        why: "Cloud đắt tiền cho side projects. VPS rẻ, học được nhiều hơn, hiểu hệ thống sâu hơn.",
+        what: "Linux basics (ssh, systemd, ufw, cron), Nginx as reverse proxy, SSL với Let's Encrypt, process manager (PM2 hoặc Docker), log management.",
+        how: "Mua VPS rẻ (DigitalOcean $4/month hoặc Hetzner €3/month). Deploy thật, không phải local.",
+        project: { name: "Self-hosted full stack app", desc: "Deploy blog API + Next.js frontend lên VPS: Nginx reverse proxy, SSL/HTTPS, auto-renew certificate, automatic restart khi crash." }
+      },
+      {
+        tag: "do", tagLabel: "DevOps",
+        name: "Monitoring & Logging",
+        why: "Production không có monitoring = bạn không biết app đang chết từ lúc nào.",
+        what: "Structured logging (Winston/Pino), log levels, correlation IDs, health check endpoints, uptime monitoring, basic alerts.",
+        how: "Thêm structured logging vào project. Dùng Betterstack hoặc Logtail (free tier) để aggregate logs.",
+        project: { name: "Observability setup", desc: "Thêm vào NestJS app: structured logs với correlation ID, /health endpoint, Prometheus metrics basic (/metrics), alerting qua email khi app down." }
+      },
+      {
+        tag: "en", tagLabel: "English",
+        name: "English — Listening & Watching",
+        why: "Tech talks, conference videos, Loom screen recordings từ senior teammates — tất cả bằng tiếng Anh.",
+        what: "Xem tech talks (YouTube: Fun Fun Function, Theo, ThePrimeagen), nghe podcasts, xem conference recordings.",
+        how: "1 video kỹ thuật mỗi ngày (15-30 phút). Xem 2 lần: lần 1 có sub, lần 2 không sub.",
+        project: { name: "Talk summary habit", desc: "Sau mỗi video hay, viết 5 bullet points bằng tiếng Anh: key takeaways. Share lên Twitter/X hoặc blog cá nhân." }
+      }
+    ],
+    checkpoint: [
+      "Mọi project đều chạy trong Docker Compose",
+      "Có CI/CD tự động test và deploy",
+      "App thật đang chạy trên VPS với domain thật và HTTPS",
+      "Có logs tập trung, có health monitoring",
+      "Hiểu được error trong logs và fix không cần hỏi"
+    ]
+  },
+  {
+    id: 3,
+    title: "Giai đoạn 3 — Frontend & Full Stack",
+    duration: "Tháng 10–13",
+    badge: "Full Stack",
+    badgeClass: "badge-3",
+    barColor: "#534AB7",
+    topics: [
+      {
+        tag: "fe", tagLabel: "Frontend",
+        name: "React sâu — Rendering & Performance",
+        why: "Biết React cơ bản chưa đủ. Hiểu reconciliation, re-render behavior → tránh bug khó chịu và app chậm.",
+        what: "Reconciliation algorithm, React Fiber, memo/useMemo/useCallback đúng chỗ, useRef vs useState, batching, Suspense, Error Boundary.",
+        how: "Dùng React DevTools Profiler để identify re-renders. Đọc 'Before You Memo' của Dan Abramov.",
+        project: { name: "Performance audit", desc: "Lấy một component phức tạp bạn đã viết, profile nó, giảm unnecessary re-renders xuống 0, document lại những gì bạn thay đổi và tại sao." }
+      },
+      {
+        tag: "fe", tagLabel: "Frontend",
+        name: "State Management — Zustand & Context",
+        why: "State management sai = prop drilling, stale closures, over-fetching. Hiểu đúng = code sạch hơn.",
+        what: "React Context đúng chỗ (server state vs client state), Zustand basics, React Query/TanStack Query cho server state.",
+        how: "Build project mà không dùng thêm library, sau đó refactor với Zustand. Thấy rõ sự khác biệt.",
+        project: { name: "Shopping cart app", desc: "Cart state với Zustand (persist to localStorage), server state với React Query (products, orders), optimistic updates khi add to cart." }
+      },
+      {
+        tag: "fe", tagLabel: "Frontend",
+        name: "Next.js — SSR, SSG, App Router",
+        why: "Next.js là chuẩn mới cho React apps: SEO, performance, full-stack trong 1 project.",
+        what: "App Router vs Pages Router, Server Components vs Client Components, data fetching patterns, image optimization, dynamic routes, middleware.",
+        how: "Build lại frontend projects bằng Next.js. Focus vào hiểu khi nào dùng server component vs client component.",
+        project: { name: "E-commerce frontend với Next.js", desc: "Product listing (SSG), product detail (ISR), cart (client state), checkout (form), user dashboard (SSR + auth middleware). Lighthouse score > 90." }
+      },
+      {
+        tag: "fe", tagLabel: "Frontend",
+        name: "Forms, Auth UI & API Integration",
+        why: "Phần lớn web app là forms. Làm forms đúng cách (validation, UX, error handling) phân biệt junior và mid.",
+        what: "React Hook Form, Zod validation, axios/fetch patterns, error handling UI, loading states, optimistic UI.",
+        how: "Mọi form đều có: validation, loading state, error display, success feedback. Không có ngoại lệ.",
+        project: { name: "Full auth flow UI", desc: "Login, register, forgot password, reset password, email verification — tất cả với proper UX: loading buttons, error messages, redirect sau login." }
+      },
+      {
+        tag: "en", tagLabel: "English",
+        name: "English — Speaking & Meetings",
+        why: "Job interview, daily standups, code review meetings — cần nói được dù không perfect.",
+        what: "Cụm từ thông dụng trong meetings, cách giải thích technical decisions, cách hỏi khi không hiểu.",
+        how: "Nói tiếng Anh một mình khi code (rubber duck debugging bằng tiếng Anh). Dùng Speeko app hoặc iTalki.",
+        project: { name: "Mock interview record", desc: "Tự record video giải thích một technical topic bằng tiếng Anh (5 phút). Xem lại, note điểm cần cải thiện. Làm mỗi tuần 1 lần." }
+      }
+    ],
+    checkpoint: [
+      "Build Next.js app với SSR/SSG/ISR, hiểu khi nào dùng cái nào",
+      "Forms có validation đầy đủ, không hardcode error messages",
+      "Lighthouse score trên 85 cho tất cả pages chính",
+      "Auth flow hoàn chỉnh cả FE + BE, không có security holes cơ bản",
+      "Giải thích được một component cho người khác bằng tiếng Anh"
+    ]
+  },
+  {
+    id: 4,
+    title: "Giai đoạn 4 — Advanced & AI Integration",
+    duration: "Tháng 14–18",
+    badge: "Senior Track",
+    badgeClass: "badge-4",
+    barColor: "#0F6E56",
+    topics: [
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "Message Queues — RabbitMQ & Kafka cơ bản",
+        why: "Xử lý async jobs, decouple services, handle load spikes. Cần thiết cho system ở scale.",
+        what: "Queue vs topic, producer/consumer, acknowledgements, dead letter queue, RabbitMQ với NestJS microservices, Kafka basics.",
+        how: "Chạy RabbitMQ bằng Docker. Build event-driven version của một feature đã có.",
+        project: { name: "Email notification queue", desc: "Khi user đăng ký: publish event → consumer gửi welcome email. Retry 3 lần nếu fail. Dead letter queue cho failed jobs. Monitor queue depth." }
+      },
+      {
+        tag: "be", tagLabel: "Backend",
+        name: "System Design — Scalability",
+        why: "Đây là thứ phân biệt mid và senior. Không chỉ build feature, mà còn design nó scale tốt.",
+        what: "Load balancing, horizontal vs vertical scaling, database replication, sharding basics, CDN, stateless services, caching layers.",
+        how: "Đọc 'Designing Data-Intensive Applications' (sách quan trọng nhất). Xem system design videos trên YouTube (ByteByteGo).",
+        project: { name: "Design một hệ thống thật", desc: "Chọn một service (URL shortener, notification system, feed system), design nó support 1M users: data flow, bottlenecks, how to scale each layer." }
+      },
+      {
+        tag: "ai", tagLabel: "AI",
+        name: "AI API Integration — OpenAI / Claude",
+        why: "AI features là differentiator của apps năm 2025+. Biết integrate AI = tăng giá trị bản thân rất nhiều.",
+        what: "Chat completions, streaming responses, tool use / function calling, embeddings, vector search basics, token counting và cost optimization.",
+        how: "Đọc docs Anthropic/OpenAI. Build nhỏ trước, tăng dần complexity. Luôn handle streaming.",
+        project: { name: "AI chat feature trong app", desc: "Thêm chatbot vào blog: trả lời câu hỏi về nội dung blog (RAG basic), stream response, conversation history, suggest related posts." }
+      },
+      {
+        tag: "ai", tagLabel: "AI",
+        name: "Prompt Engineering cho Developers",
+        why: "Dùng AI trong code workflow: generate tests, review code, document, refactor — tiết kiệm 2-4 giờ/ngày.",
+        what: "System prompts, structured output (JSON mode), chain-of-thought cho complex tasks, few-shot examples, RAG pattern, AI-assisted code review.",
+        how: "Build automation tools nhỏ: auto test generator, commit message writer, PR description generator.",
+        project: { name: "AI dev toolkit", desc: "CLI tool: 1) generate unit tests cho một function, 2) review diff và suggest improvements, 3) generate JSDoc từ code. Tất cả dùng AI API với streaming output." }
+      },
+      {
+        tag: "ai", tagLabel: "AI",
+        name: "RAG — Retrieval Augmented Generation",
+        why: "RAG = cho AI 'nhớ' data của bạn. Cần thiết cho mọi AI app dùng custom data.",
+        what: "Embeddings, vector databases (pgvector hoặc Chroma), chunking strategies, similarity search, re-ranking.",
+        how: "Dùng pgvector (extension của PostgreSQL) để đơn giản hóa stack. Implement full pipeline từ ingest đến query.",
+        project: { name: "Document Q&A system", desc: "Upload PDF → chunk và embed → store trong pgvector → query với semantic search → pass relevant chunks vào LLM → stream answer với citations." }
+      },
+      {
+        tag: "sd", tagLabel: "System",
+        name: "Clean Architecture & Codebase Design",
+        why: "Code base lớn mà không có architecture = nightmare. Senior biết tổ chức code để scale team.",
+        what: "Hexagonal/clean architecture, domain-driven design basics, SOLID principles thực tế, dependency inversion, interface segregation.",
+        how: "Refactor một project cũ theo clean architecture. Đọc 'Clean Architecture' của Uncle Bob (chọn lọc, đừng đọc hết).",
+        project: { name: "Refactor codebase cũ", desc: "Lấy blog API từ phase 1, refactor sang clean architecture: domain layer, application layer, infrastructure layer. Sau đó swap PostgreSQL sang SQLite mà không đụng business logic." }
+      },
+      {
+        tag: "en", tagLabel: "English",
+        name: "English — Job Search & Interview",
+        why: "Senior roles ở công ty nước ngoài, remote jobs — cần communicate tốt cả viết lẫn nói.",
+        what: "CV tiếng Anh, cover letter, technical interview phrases, behavioral interview (STAR method), negotiation basics.",
+        how: "Làm CV tiếng Anh. Practice mock interviews với AI (roleplay). Xem 'Tech Interview Handbook' trên GitHub.",
+        project: { name: "Job search assets", desc: "1 CV chuyên nghiệp, 3 cover letter templates, 20 STAR stories viết ra, portfolio website với case studies của mọi project đã làm." }
+      }
+    ],
+    checkpoint: [
+      "Explain và implement một message queue solution cho use case cụ thể",
+      "Design một system cho 1M users (whiteboard style)",
+      "AI feature đang chạy trong production với streaming và error handling",
+      "Codebase có clear architecture, junior có thể onboard trong 1 ngày",
+      "Đọc và viết tiếng Anh kỹ thuật tự nhiên, không cần dịch",
+      "Có ít nhất 1 project thật đang phục vụ real users"
+    ]
+  }
+];
+
+let currentFilter = 'all';
+let currentSearch = '';
+let openPhases = new Set([0]);
+let openTopics = new Set();
+let checkedItems = JSON.parse(localStorage.getItem('roadmap-checks-v2') || '{}');
+
+function saveChecks() {
+  try { localStorage.setItem('roadmap-checks-v2', JSON.stringify(checkedItems)); } catch(e) {}
+}
+
+function tagClass(tag) {
+  return `tag-${tag}`;
+}
+
+function slug(text) {
+  return text.toLowerCase().replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '-');
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function topicMatch(topic) {
+  const query = currentSearch.trim().toLowerCase();
+  if (!query) return true;
+  return [topic.name, topic.why, topic.what, topic.how, topic.project.name, topic.project.desc]
+    .join(' ')
+    .toLowerCase()
+    .includes(query);
+}
+
+function renderSummary() {
+  const totalPhases = data.length;
+  const totalTopics = data.reduce((acc, phase) => acc + phase.topics.length, 0);
+  const totalChecks = data.reduce((acc, phase) => acc + phase.checkpoint.length, 0);
+  const doneChecks = Object.values(checkedItems).filter(Boolean).length;
+  const progress = totalChecks ? Math.round((doneChecks / totalChecks) * 100) : 0;
+  const months = 18;
+
+  document.getElementById('summary-grid').innerHTML = `
+    <article class="summary-card"><div class="summary-num">${months}</div><div class="summary-lbl">tháng học tập định hướng</div></article>
+    <article class="summary-card"><div class="summary-num">${totalPhases}</div><div class="summary-lbl">giai đoạn phát triển</div></article>
+    <article class="summary-card"><div class="summary-num">${totalTopics}</div><div class="summary-lbl">topic cần làm chủ</div></article>
+    <article class="summary-card"><div class="summary-num">${progress}%</div><div class="summary-lbl">checkpoint đã hoàn thành</div></article>
+  `;
+}
+
+function renderTopics(topics, phaseId) {
+  const visibleTopics = topics.filter(t => (currentFilter === 'all' || t.tag === currentFilter) && topicMatch(t));
+  return visibleTopics.map((topic) => {
+    const key = `${phaseId}-${slug(topic.name)}`;
+    const isOpen = openTopics.has(key);
+    return `
+      <article class="topic ${isOpen ? 'expanded' : ''}" id="topic-${key}">
+        <div class="topic-header" onclick="toggleTopic('${key}', event)">
+          <span class="topic-tag ${tagClass(topic.tag)}">${escapeHtml(topic.tagLabel)}</span>
+          <span class="topic-name">${escapeHtml(topic.name)}</span>
+          <span class="topic-chevron ${isOpen ? 'open' : ''}">▼</span>
+        </div>
+        <div class="topic-detail ${isOpen ? 'open' : ''}">
+          <div class="detail-row">
+            <div class="detail-box">
+              <div class="detail-box-label">Tại sao quan trọng</div>
+              <div class="detail-box-text">${escapeHtml(topic.why)}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-box-label">Học gì</div>
+              <div class="detail-box-text">${escapeHtml(topic.what)}</div>
+            </div>
+          </div>
+          <div class="detail-box" style="margin-bottom:8px">
+            <div class="detail-box-label">Cách thực hành</div>
+            <div class="detail-box-text">${escapeHtml(topic.how)}</div>
+          </div>
+          <div class="project-box">
+            <div class="project-label">Project thực tế</div>
+            <div class="project-name">${escapeHtml(topic.project.name)}</div>
+            <div class="project-desc">${escapeHtml(topic.project.desc)}</div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderChecklist(items, phaseId) {
+  return items.map((item, i) => {
+    const key = `check-${phaseId}-${i}`;
+    const checked = checkedItems[key];
+    return `
+      <label class="check-item">
+        <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleCheck('${key}', event)" />
+        <span>${escapeHtml(item)}</span>
+      </label>
+    `;
+  }).join('');
+}
+
+function renderPhases() {
+  const container = document.getElementById('phases-container');
+  container.innerHTML = data.map((phase) => {
+    const filteredTopics = phase.topics.filter(t => (currentFilter === 'all' || t.tag === currentFilter) && topicMatch(t));
+    if (filteredTopics.length === 0) return '';
+    const isOpen = openPhases.has(phase.id);
+    const checked = phase.checkpoint.filter((_, i) => checkedItems[`check-${phase.id}-${i}`]).length;
+    const total = phase.checkpoint.length;
+    const pct = Math.round(checked / total * 100);
+    return `
+      <article class="phase-card" id="phase-${phase.id}">
+        <div class="phase-header" onclick="togglePhase(${phase.id})">
+          <span class="phase-badge ${phase.badgeClass}">${escapeHtml(phase.badge)}</span>
+          <span class="phase-title">${escapeHtml(phase.title)}</span>
+          <span class="phase-meta">${escapeHtml(phase.duration)} · ${checked}/${total} done</span>
+          <span class="phase-toggle ${isOpen ? 'open' : ''}">▼</span>
+        </div>
+        <div class="phase-track">
+          <div class="phase-progress" style="width:${pct}%; background:${phase.barColor}"></div>
+        </div>
+        <div class="phase-body ${isOpen ? 'open' : ''}">
+          <div class="section-title">Topics</div>
+          <div class="topics">${renderTopics(filteredTopics, phase.id)}</div>
+          <div class="checkpoint">
+            <div class="checkpoint-title">Checkpoint — Bạn đã đạt được chưa?</div>
+            <div class="checklist">${renderChecklist(phase.checkpoint, phase.id)}</div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
+
+  if (!container.innerHTML.trim()) {
+    container.innerHTML = '<div class="empty">Không có topic khớp với bộ lọc/từ khóa hiện tại.</div>';
+  }
+
+  renderSummary();
+}
+
+function togglePhase(id) {
+  if (openPhases.has(id)) openPhases.delete(id);
+  else openPhases.add(id);
+  renderPhases();
+}
+
+function toggleTopic(key, e) {
+  e.stopPropagation();
+  if (openTopics.has(key)) openTopics.delete(key);
+  else openTopics.add(key);
+  renderPhases();
+}
+
+function toggleCheck(key, e) {
+  e.stopPropagation();
+  checkedItems[key] = !checkedItems[key];
+  saveChecks();
+  renderPhases();
+}
+
+function filterPhases(tag, el) {
+  currentFilter = tag;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderPhases();
+}
+
+function updateSearch(value) {
+  currentSearch = value;
+  renderPhases();
+}
+
+renderPhases();
+</script>
+</body>
+</html>
